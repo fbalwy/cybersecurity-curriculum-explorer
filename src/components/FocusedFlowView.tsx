@@ -732,6 +732,7 @@ function FocusedCourseCard({
 
 function modeLabel(focusMode: FocusMode): string {
   if (focusMode === 'direct') return 'direct prerequisite'
+  if (focusMode === 'direct-unlocks') return 'courses it unlocks directly'
   if (focusMode === 'unlocks') return 'courses it unlocks'
   return 'full path'
 }

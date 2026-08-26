@@ -38,6 +38,21 @@ describe('curriculum relationships', () => {
     expect(focusState(plan, 'CYB375', 'unlocks').edges).toHaveLength(1)
   })
 
+  it('separates direct unlocks from the complete downstream path', () => {
+    const plan = getPlan('developed')
+    const directUnlocks = focusState(plan, 'CS112', 'direct-unlocks')
+    const allUnlocks = focusState(plan, 'CS112', 'unlocks')
+
+    expect(directUnlocks.downstreamCodes).toEqual(new Set(['CS113', 'CS276', 'CS285']))
+    expect(directUnlocks.activeCodes).toEqual(new Set(['CS112', 'CS113', 'CS276', 'CS285']))
+    expect(directUnlocks.edges).toEqual([
+      { source: 'CS112', target: 'CS113', relationship: 'downstream' },
+      { source: 'CS112', target: 'CS276', relationship: 'downstream' },
+      { source: 'CS112', target: 'CS285', relationship: 'downstream' },
+    ])
+    expect(allUnlocks.activeCodes.size).toBeGreaterThan(directUnlocks.activeCodes.size)
+  })
+
   it('keeps direct mode limited to the selected course and its immediate prerequisites', () => {
     const focus = focusState(getPlan('developed'), 'CYB215', 'direct')
 

@@ -71,4 +71,4 @@ export interface PlanDataset {
   plans: Record<PlanKey, StudyPlan>
 }
 
-export type FocusMode = 'direct' | 'full' | 'unlocks'
+export type FocusMode = 'direct' | 'full' | 'direct-unlocks' | 'unlocks'

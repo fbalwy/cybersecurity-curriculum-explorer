@@ -138,6 +138,7 @@ describe('focused curriculum flow', () => {
   it.each([
     ['direct', 2],
     ['full', 6],
+    ['direct-unlocks', 3],
     ['unlocks', 3],
   ] as const)('hides empty levels in %s mode while preserving the relationships', (mode, expectedStages) => {
     const plan = getPlan('developed')

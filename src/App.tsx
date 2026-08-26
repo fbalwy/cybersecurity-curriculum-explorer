@@ -11,9 +11,9 @@ function initialState() {
   const planKey: PlanKey = params.get('plan') === 'old' ? 'old' : 'developed'
   const requestedMode = params.get('mode')
   const focusMode: FocusMode =
-    requestedMode === 'direct' || requestedMode === 'full' || requestedMode === 'unlocks'
+    requestedMode === 'direct' || requestedMode === 'full' || requestedMode === 'direct-unlocks' || requestedMode === 'unlocks'
       ? requestedMode
-      : 'unlocks'
+      : 'direct-unlocks'
   const plan = getPlan(planKey)
   const requestedCourse = params.get('course')
   const selectedCode = plan.courses.some((course) => course.code === requestedCourse)
@@ -53,12 +53,12 @@ export default function App() {
   const changePlan = (key: PlanKey) => {
     setPlanKey(key)
     setSelectedCode(null)
-    setFocusMode('unlocks')
+    setFocusMode('direct-unlocks')
     document.querySelector('.primary-surface')?.scrollTo({ top: 0 })
   }
 
   const selectCourse = useCallback((code: string | null, reveal = false) => {
-    if (code) setFocusMode('unlocks')
+    if (code) setFocusMode('direct-unlocks')
     setSelectedCode(code)
     if (code && reveal) {
       window.requestAnimationFrame(() => {
@@ -98,7 +98,7 @@ export default function App() {
         onPlanChange={changePlan}
         onReset={() => {
           selectCourse(null)
-          setFocusMode('unlocks')
+          setFocusMode('direct-unlocks')
           setHideEmptyLevels(true)
         }}
         onSelectCourse={(code) => selectCourse(code, true)}

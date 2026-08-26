@@ -98,17 +98,30 @@ export function focusState(plan: StudyPlan, code: string, mode: FocusMode): Focu
   const allAncestors = ancestors(plan, code)
   const allDescendants = descendants(plan, code)
   const directPrerequisites = new Set(selected.prerequisites.filter((item) => index.has(item)))
+  const directDownstreamCodes = new Set(directDependents(plan, code).map((course) => course.code))
 
   const upstreamCodes =
     mode === 'direct' ? directPrerequisites : mode === 'full' ? allAncestors : new Set<string>()
-  const downstreamCodes = mode === 'full' || mode === 'unlocks' ? allDescendants : new Set<string>()
+  const downstreamCodes =
+    mode === 'direct-unlocks'
+      ? directDownstreamCodes
+      : mode === 'full' || mode === 'unlocks'
+        ? allDescendants
+        : new Set<string>()
   const activeCodes = new Set([code, ...upstreamCodes, ...downstreamCodes])
+  const edges = mode === 'direct-unlocks'
+    ? [...directDownstreamCodes].map((target) => ({
+        source: code,
+        target,
+        relationship: 'downstream' as const,
+      }))
+    : edgesWithin(plan, activeCodes, code)
 
   return {
     activeCodes,
     upstreamCodes,
     downstreamCodes,
-    edges: edgesWithin(plan, activeCodes, code),
+    edges,
   }
 }
 

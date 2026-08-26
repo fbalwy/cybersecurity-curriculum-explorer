@@ -33,10 +33,11 @@ interface CourseInspectorProps {
   onClose: () => void
 }
 
-const modeOptions: Array<{ mode: FocusMode; label: string; icon: typeof CircleDot }> = [
-  { mode: 'direct', label: 'Direct prerequisite', icon: CircleDot },
-  { mode: 'full', label: 'Full path', icon: Route },
-  { mode: 'unlocks', label: 'Courses it unlocks', icon: GitBranch },
+const modeOptions: Array<{ mode: FocusMode; label: string; ariaLabel: string; icon: typeof CircleDot }> = [
+  { mode: 'direct', label: 'Direct prerequisite', ariaLabel: 'Direct prerequisite', icon: CircleDot },
+  { mode: 'full', label: 'Full path', ariaLabel: 'Full path', icon: Route },
+  { mode: 'direct-unlocks', label: 'Unlocks directly', ariaLabel: 'Courses it unlocks directly', icon: ArrowRight },
+  { mode: 'unlocks', label: 'Courses it unlocks', ariaLabel: 'Courses it unlocks', icon: GitBranch },
 ]
 
 function CourseLink({
@@ -173,13 +174,15 @@ export function CourseInspector({
       </div>
 
       <div className="focus-tabs" aria-label="Relationship focus" role="group">
-        {modeOptions.map(({ mode, label, icon: Icon }) => (
+        {modeOptions.map(({ mode, label, ariaLabel, icon: Icon }) => (
           <button
+            aria-label={ariaLabel}
             aria-controls="curriculum-focus-view"
             aria-pressed={focusMode === mode}
             className={focusMode === mode ? 'is-active' : ''}
             key={mode}
             onClick={() => onFocusModeChange(mode)}
+            title={ariaLabel}
             type="button"
           >
             <Icon size={15} aria-hidden="true" />
