@@ -7,17 +7,18 @@ describe('curriculum focus interactions', () => {
     window.history.replaceState(null, '', '/?plan=developed')
   })
 
-  it('opens every course in full-path mode and returns to the plan from empty space', () => {
+  it('opens every course in courses-it-unlocks mode and returns to the plan from empty space', () => {
     const view = render(<App />)
 
     fireEvent.click(view.container.querySelector('[data-course-code="CS114"]')!)
 
-    expect(screen.getByRole('region', { name: 'Focused full path for CS114' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Full path' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('region', { name: 'Focused courses it unlocks for CS114' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Courses it unlocks' })).toHaveAttribute('aria-pressed', 'true')
     expect(view.container.querySelector('.curriculum-view-enter')).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Hide empty levels' })).toBeChecked()
-    expect(view.container.querySelectorAll('.focused-flow-stage')).toHaveLength(4)
+    expect(view.container.querySelectorAll('.focused-flow-stage')).toHaveLength(1)
     expect(view.container.querySelector('[data-level-layout="compact"]')).toBeInTheDocument()
+    expect(window.location.search).toContain('mode=unlocks')
     expect(window.location.search).toContain('compact=1')
     expect(screen.queryByText('Source record')).not.toBeInTheDocument()
     expect(screen.queryByText(/The source instructs students/)).not.toBeInTheDocument()
@@ -32,5 +33,14 @@ describe('curriculum focus interactions', () => {
 
     expect(screen.getByRole('region', { name: 'Interactive study plan by level' })).toBeInTheDocument()
     expect(screen.queryByRole('complementary', { name: 'Details for CS114' })).not.toBeInTheDocument()
+  })
+
+  it('preserves an explicitly requested focus mode from the URL', () => {
+    window.history.replaceState(null, '', '/?plan=developed&course=CS114&mode=full&compact=1')
+
+    render(<App />)
+
+    expect(screen.getByRole('region', { name: 'Focused full path for CS114' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Full path' })).toHaveAttribute('aria-pressed', 'true')
   })
 })
