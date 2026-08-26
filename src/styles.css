@@ -1030,9 +1030,8 @@ summary:focus-visible {
 }
 
 .focused-flow-edges .relationship-path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: focused-path-draw 520ms cubic-bezier(0.22, 1, 0.36, 1) 260ms forwards;
+  opacity: 0;
+  animation: focused-path-in 220ms ease 260ms forwards;
 }
 
 .focused-flow-edges .relationship-path-halo {
@@ -1040,9 +1039,9 @@ summary:focus-visible {
   animation: focused-path-halo 180ms ease 240ms forwards;
 }
 
-@keyframes focused-path-draw {
+@keyframes focused-path-in {
   to {
-    stroke-dashoffset: 0;
+    opacity: 1;
   }
 }
 
