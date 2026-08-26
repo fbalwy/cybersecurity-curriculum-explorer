@@ -17,7 +17,7 @@ function initialState() {
   const selectedCode = plan.courses.some((course) => course.code === requestedCourse)
     ? requestedCourse
     : null
-  const hideEmptyLevels = params.get('compact') === '1'
+  const hideEmptyLevels = params.get('compact') !== '0'
 
   return { focusMode, hideEmptyLevels, planKey, selectedCode }
 }
@@ -43,7 +43,7 @@ export default function App() {
     if (selectedCode) {
       params.set('course', selectedCode)
       params.set('mode', focusMode)
-      if (hideEmptyLevels) params.set('compact', '1')
+      params.set('compact', hideEmptyLevels ? '1' : '0')
     }
     window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`)
   }, [focusMode, hideEmptyLevels, planKey, selectedCode])
@@ -97,7 +97,7 @@ export default function App() {
         onReset={() => {
           selectCourse(null)
           setFocusMode('full')
-          setHideEmptyLevels(false)
+          setHideEmptyLevels(true)
         }}
         onSelectCourse={(code) => selectCourse(code, true)}
         plan={plan}

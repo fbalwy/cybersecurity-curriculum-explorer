@@ -15,13 +15,18 @@ describe('curriculum focus interactions', () => {
     expect(screen.getByRole('region', { name: 'Focused full path for CS114' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Full path' })).toHaveAttribute('aria-pressed', 'true')
     expect(view.container.querySelector('.curriculum-view-enter')).toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Hide empty levels' }))
-
     expect(screen.getByRole('checkbox', { name: 'Hide empty levels' })).toBeChecked()
     expect(view.container.querySelectorAll('.focused-flow-stage')).toHaveLength(4)
     expect(view.container.querySelector('[data-level-layout="compact"]')).toBeInTheDocument()
     expect(window.location.search).toContain('compact=1')
+    expect(screen.queryByText('Source record')).not.toBeInTheDocument()
+    expect(screen.queryByText(/The source instructs students/)).not.toBeInTheDocument()
+    expect(view.container.querySelector('.focused-flow-stage .level-band__label > span')).toBeNull()
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Hide empty levels' }))
+    expect(screen.getByRole('checkbox', { name: 'Hide empty levels' })).not.toBeChecked()
+    expect(view.container.querySelector('[data-level-layout="all"]')).toBeInTheDocument()
+    expect(window.location.search).toContain('compact=0')
 
     fireEvent.click(view.container.querySelector('.focused-flow-stage__courses')!)
 

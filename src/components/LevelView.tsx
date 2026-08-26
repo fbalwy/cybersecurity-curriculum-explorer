@@ -91,7 +91,6 @@ function DefaultLevelView({
           return (
             <section className="level-band" id={`level-${level}`} key={level}>
               <div className="level-band__label">
-                <span>{String(level).padStart(2, '0')}</span>
                 <div>
                   <strong>Level {level}</strong>
                   <small>{plan.levelTotals[String(level)]} credits</small>
@@ -135,12 +134,6 @@ function DefaultLevelView({
           </div>
         </section>
 
-        {plan.warnings.map((warning) => (
-          <div className="plan-warning" key={warning}>
-            <AlertTriangle size={17} aria-hidden="true" />
-            <span>{warning}</span>
-          </div>
-        ))}
       </div>
     </section>
   )

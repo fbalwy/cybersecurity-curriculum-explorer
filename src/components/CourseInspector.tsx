@@ -89,12 +89,6 @@ function PlanOverview({ plan }: { plan: StudyPlan }) {
         <CheckCircle2 size={17} aria-hidden="true" />
         <span>Every arrow is derived only from an explicit course code in the source Req cell.</span>
       </div>
-      {plan.warnings.map((warning) => (
-        <div className="inspector-warning" key={warning}>
-          <AlertTriangle size={17} aria-hidden="true" />
-          <span>{warning}</span>
-        </div>
-      ))}
     </div>
   )
 }
@@ -297,23 +291,6 @@ export function CourseInspector({
         )}
       </section>
 
-      <details className="source-detail">
-        <summary>Source record</summary>
-        <dl>
-          <div>
-            <dt>Raw Req cell</dt>
-            <dd>{course.requirementRaw?.trim() || 'Blank'}</dd>
-          </div>
-          <div>
-            <dt>Source range</dt>
-            <dd>{course.sourceRange}</dd>
-          </div>
-          <div>
-            <dt>Requirement status</dt>
-            <dd>{course.requirementStatus.replaceAll('_', ' ')}</dd>
-          </div>
-        </dl>
-      </details>
     </aside>
   )
 }

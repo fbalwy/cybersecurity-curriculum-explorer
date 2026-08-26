@@ -867,9 +867,7 @@ export function FocusedFlowView({
                 }}
               >
                 <div className="level-band__label">
-                  <span className={isElectiveRow ? 'focused-elective-label' : undefined}>
-                    {isElectiveRow ? 'E' : String(level).padStart(2, '0')}
-                  </span>
+                  {isElectiveRow ? <span className="focused-elective-label">E</span> : null}
                   <div>
                     <strong id={headingId}>{heading}</strong>
                     <small>{summary}</small>
@@ -896,12 +894,6 @@ export function FocusedFlowView({
         </div>
       </div>
 
-      {plan.warnings.map((warning) => (
-        <div className="plan-warning" key={warning}>
-          <AlertTriangle size={17} aria-hidden="true" />
-          <span>{warning}</span>
-        </div>
-      ))}
     </section>
   )
 }
