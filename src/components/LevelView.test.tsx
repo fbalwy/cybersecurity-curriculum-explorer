@@ -57,6 +57,20 @@ describe('focused curriculum flow', () => {
     expect(receivers.length).toBeGreaterThan(0)
   })
 
+  it('keeps old-plan project routes in separate stable lanes', () => {
+    const plan = getPlan('old')
+    const layout = buildFocusedFlowLayout(plan, 'CYB251', 'full', true)
+    const projectSpine = layout.bundles.find(
+      (segment) => segment.source === 'CYB487' && segment.role === 'spine',
+    )
+
+    expect(projectSpine).toBeDefined()
+    expect(projectSpine?.path).not.toContain('Q ')
+    const projectSpineXs = [...(projectSpine?.path.matchAll(/[ML]\s+(-?\d+(?:\.\d+)?)\s/g) ?? [])]
+      .map((match) => Number(match[1]))
+    expect(new Set(projectSpineXs).size).toBe(1)
+  })
+
   it('switches from the full plan to the selected flow without retaining unrelated cards', () => {
     const plan = getPlan('developed')
     const onSelectCourse = vi.fn()

@@ -88,6 +88,9 @@ const COURSE_LEFT = LABEL_WIDTH + 34
 const COURSE_RIGHT = FOCUSED_FLOW_WIDTH - 34
 const COURSE_WIDTH = COURSE_RIGHT - COURSE_LEFT
 const ROUTE_CLEARANCE = 12
+const ROUTE_LANE_SEPARATION = 18
+const ROUTE_LANE_CONFLICT_PENALTY = 4000
+const MICRO_CHANNEL_SHIFT = 10
 const TARGET_APPROACH = 27
 const RECEIVER_DROP = 6
 const TARGET_ARROW_GAP = 3
@@ -140,6 +143,24 @@ function cardsForStage(
   }
 
   return cards
+}
+
+function alignSingletonStages(stages: LogicalStage[], relationships: RelationshipEdge[]): void {
+  const positions = new Map(stages.flatMap((stage) => stage.cards).map((card) => [card.course.code, card]))
+
+  stages.forEach((stage) => {
+    if (stage.cards.length !== 1) return
+    const target = stage.cards[0]
+    const incomingSources = relationships
+      .filter((edge) => edge.target === target.course.code)
+      .map((edge) => positions.get(edge.source))
+      .filter((source): source is LogicalCard => Boolean(source && source.y < target.y))
+    if (incomingSources.length !== 1) return
+
+    const source = incomingSources[0]
+    const alignedX = source.x + (source.width - target.width) / 2
+    target.x = roundCoordinate(Math.max(COURSE_LEFT, Math.min(COURSE_RIGHT - target.width, alignedX)))
+  })
 }
 
 function roundCoordinate(value: number): number {
@@ -306,7 +327,10 @@ function chooseBundleChannels(
     const reserved = reservedByStage.get(rowIndex) ?? []
     const currentStates = new Map<number, State>()
     candidates.forEach((candidate) => {
-      const reservationPenalty = reserved.some((used) => Math.abs(used - candidate) < 10) ? 34 : 0
+      const reservationPenalty = reserved.reduce(
+        (penalty, used) => penalty + (Math.abs(used - candidate) < ROUTE_LANE_SEPARATION ? ROUTE_LANE_CONFLICT_PENALTY : 0),
+        0,
+      )
       const targetPenalty = Math.abs(candidate - desired) * 0.08
       if (rowOffset === 0) {
         currentStates.set(candidate, {
@@ -389,6 +413,8 @@ export function buildFocusedFlowLayout(
     return stage
   })
 
+  alignSingletonStages(stages, focus.edges)
+
   const allCards = stages.flatMap((stage) => stage.cards)
   const positions = new Map(allCards.map((card) => [card.course.code, card]))
   const sourceEdges = [...focus.edges]
@@ -470,19 +496,29 @@ export function buildFocusedFlowLayout(
         if (target) targetPorts.set(edge.target, inboundPorts.get(key) ?? target.x + target.width / 2)
       })
 
+      const lastRow = Math.max(...targets.map((target) => target.rowIndex))
+      const routeStages = stages.filter(
+        (stage) => stage.rowIndex > source.rowIndex && stage.rowIndex <= lastRow,
+      )
+      const sourceX = source.x + source.width / 2
       const channels = chooseBundleChannels(stages, source, targets, targetPorts, reservedByStage)
+      let previousChannel = sourceX
+      routeStages.forEach((stage) => {
+        const proposedChannel = channels.get(stage.rowIndex)
+        if (proposedChannel == null) return
+        const stableChannel = Math.abs(proposedChannel - previousChannel) < MICRO_CHANNEL_SHIFT
+          ? previousChannel
+          : proposedChannel
+        channels.set(stage.rowIndex, stableChannel)
+        previousChannel = stableChannel
+      })
       channels.forEach((channel, rowIndex) => {
         const reserved = reservedByStage.get(rowIndex) ?? []
         reserved.push(channel)
         reservedByStage.set(rowIndex, reserved)
       })
 
-      const sourceX = source.x + source.width / 2
       const sourceY = source.y + source.height
-      const lastRow = Math.max(...targets.map((target) => target.rowIndex))
-      const routeStages = stages.filter(
-        (stage) => stage.rowIndex > source.rowIndex && stage.rowIndex <= lastRow,
-      )
       const firstRouteRow = routeStages[0]?.rowIndex
       let currentX = firstRouteRow == null ? sourceX : (channels.get(firstRouteRow) ?? sourceX)
       let currentY = sourceY

@@ -1106,6 +1106,16 @@ summary:focus-visible {
   position: sticky;
   left: 0;
   z-index: 5;
+  overflow: hidden;
+}
+
+.focused-flow-stage .level-band__label div {
+  min-width: 0;
+}
+
+.focused-flow-stage .level-band__label strong,
+.focused-flow-stage .level-band__label small {
+  overflow-wrap: anywhere;
 }
 
 .focused-flow-stage__courses {
@@ -1117,6 +1127,18 @@ summary:focus-visible {
 .focused-flow-stage--elective {
   background: #f7f9f3;
   border-color: #dfe6d4;
+}
+
+.focused-flow-stage--elective .level-band__label {
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+}
+
+.focused-flow-stage--elective .level-band__label div {
+  width: 100%;
 }
 
 .focused-flow-stage .level-band__label > svg {
