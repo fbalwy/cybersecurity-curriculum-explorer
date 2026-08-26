@@ -15,6 +15,13 @@ describe('curriculum focus interactions', () => {
     expect(screen.getByRole('region', { name: 'Focused courses it unlocks for CS114' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Courses it unlocks' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Back to full plan' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Expand course details for CS114' })).toHaveAttribute('aria-expanded', 'false')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Expand course details for CS114' }))
+    expect(screen.getByRole('button', { name: 'Collapse course details for CS114' })).toHaveAttribute('aria-expanded', 'true')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse course details for CS114' }))
+    expect(screen.getByRole('button', { name: 'Expand course details for CS114' })).toHaveAttribute('aria-expanded', 'false')
     expect(view.container.querySelector('.curriculum-view-enter')).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Hide empty levels' })).toBeChecked()
     expect(view.container.querySelectorAll('.focused-flow-stage')).toHaveLength(1)

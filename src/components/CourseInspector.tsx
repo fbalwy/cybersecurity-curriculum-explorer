@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AlertTriangle,
   ArrowRight,
   BookOpenCheck,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   CircleDot,
   GitBranch,
   ListFilter,
@@ -103,6 +105,12 @@ export function CourseInspector({
   onSelectCourse,
   onClose,
 }: CourseInspectorProps) {
+  const [mobileExpanded, setMobileExpanded] = useState(false)
+
+  useEffect(() => {
+    setMobileExpanded(false)
+  }, [course?.code])
+
   useEffect(() => {
     if (!course) return undefined
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -128,9 +136,31 @@ export function CourseInspector({
   const unlocks = sortedCourses(directDependents(plan, course.code))
   const unresolved = unresolvedForCourse(plan, course.code)
   const isPlaceholder = /^CYB[1-4]$/.test(course.code) || /^GSE\d$/.test(course.code) || /^FF\d$/.test(course.code)
+  const activeModeLabel = modeOptions.find(({ mode }) => mode === focusMode)?.label ?? 'Course relationships'
 
   return (
-    <aside className="course-inspector" aria-label={`Details for ${course.code}`}>
+    <aside
+      className={`course-inspector${mobileExpanded ? ' course-inspector--mobile-expanded' : ''}`}
+      aria-label={`Details for ${course.code}`}
+    >
+      <button
+        aria-controls="mobile-course-inspector-content"
+        aria-expanded={mobileExpanded}
+        aria-label={`${mobileExpanded ? 'Collapse' : 'Expand'} course details for ${course.code}`}
+        className="course-inspector__mobile-toggle"
+        onClick={() => setMobileExpanded((expanded) => !expanded)}
+        type="button"
+      >
+        <span className="mobile-inspector-handle" aria-hidden="true" />
+        <span className="mobile-inspector-course">
+          <strong>{course.code}</strong>
+          <span>{course.name}</span>
+        </span>
+        <span className="mobile-inspector-mode">{activeModeLabel}</span>
+        {mobileExpanded ? <ChevronDown aria-hidden="true" size={19} /> : <ChevronUp aria-hidden="true" size={19} />}
+      </button>
+
+      <div className="course-inspector__content" id="mobile-course-inspector-content">
       <div className="inspector-heading">
         <div>
           <span>{course.categoryLabel}</span>
@@ -290,7 +320,7 @@ export function CourseInspector({
           <p className="empty-relation">No course in this plan lists {course.code} as a prerequisite.</p>
         )}
       </section>
-
+      </div>
     </aside>
   )
 }
