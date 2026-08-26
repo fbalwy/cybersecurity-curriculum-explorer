@@ -1,5 +1,5 @@
 import { useId, useLayoutEffect, useMemo, useRef } from 'react'
-import { AlertTriangle, ArrowDown, GitBranch } from 'lucide-react'
+import { AlertTriangle, ArrowDown, ArrowLeft, GitBranch } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import type { Course, FocusMode, StudyPlan } from '../data/types'
 import { focusState, unresolvedForCourse, type RelationshipEdge } from '../lib/graph'
@@ -9,7 +9,7 @@ export interface FocusedFlowViewProps {
   selectedCode: string
   focusMode: FocusMode
   hideEmptyLevels: boolean
-  onSelectCourse: (code: string) => void
+  onSelectCourse: (code: string | null) => void
 }
 
 type ActiveRelation = 'selected' | 'upstream' | 'downstream'
@@ -793,10 +793,21 @@ export function FocusedFlowView({
           <h2>{plan.label}</h2>
           <p>{focus.activeCodes.size} courses shown in the {modeLabel(focusMode)} view for {selectedCourse.code}. Click empty space to return to the full plan.</p>
         </div>
-        <div className="level-view__summary">
-          <GitBranch size={16} aria-hidden="true" />
-          <strong>{focus.activeCodes.size}</strong>
-          <span>courses in view</span>
+        <div className="level-view__actions">
+          <div className="level-view__summary">
+            <GitBranch size={16} aria-hidden="true" />
+            <strong>{focus.activeCodes.size}</strong>
+            <span>courses in view</span>
+          </div>
+          <button
+            aria-label="Back to full plan"
+            className="level-view__back"
+            onClick={() => onSelectCourse(null)}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" size={16} />
+            <span>Back</span>
+          </button>
         </div>
       </div>
 

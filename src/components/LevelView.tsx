@@ -9,7 +9,7 @@ interface LevelViewProps {
   selectedCode: string | null
   focusMode: FocusMode
   hideEmptyLevels: boolean
-  onSelectCourse: (code: string) => void
+  onSelectCourse: (code: string | null) => void
 }
 
 function LevelCourseCard({

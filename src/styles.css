@@ -885,6 +885,41 @@ summary:focus-visible {
   font-size: 8.5px;
 }
 
+.level-view__actions {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.level-view__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 78px;
+  padding: 0 13px;
+  color: #38516e;
+  background: #ffffff;
+  border: 1px solid #d9e5f2;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 720;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.level-view__back:hover {
+  color: var(--blue);
+  border-color: #a9c7ec;
+  box-shadow: 0 5px 14px rgba(22, 72, 127, 0.1);
+  transform: translateY(-1px);
+}
+
+.level-view__back:active {
+  transform: translateY(0);
+}
+
 .curriculum-content {
   position: relative;
   min-width: 0;
