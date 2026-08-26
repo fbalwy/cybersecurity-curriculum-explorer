@@ -950,6 +950,10 @@ summary:focus-visible {
   vector-effect: non-scaling-stroke;
 }
 
+.relationship-path-halo--landing {
+  stroke-linecap: butt;
+}
+
 .relationship-path--upstream {
   stroke: var(--violet);
 }

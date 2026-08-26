@@ -786,50 +786,61 @@ export function FocusedFlowView({
             >
               <defs>
                 <marker id={upstreamMarkerId} markerHeight="9" markerUnits="userSpaceOnUse" markerWidth="9" orient="auto" refX="8" refY="4.5">
-                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#7c43e8" />
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#7c43e8" stroke="#7c43e8" strokeLinejoin="round" strokeWidth="0.7" />
                 </marker>
                 <marker id={downstreamMarkerId} markerHeight="9" markerUnits="userSpaceOnUse" markerWidth="9" orient="auto" refX="8" refY="4.5">
-                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#079e9f" />
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#079e9f" stroke="#079e9f" strokeLinejoin="round" strokeWidth="0.7" />
                 </marker>
               </defs>
-              {layout.bundles.map((segment) => (
-                <g key={segment.id}>
-                  <path className="relationship-path-halo" d={segment.path} />
+              <g data-paint-layer="halos">
+                {layout.bundles.map((segment) => (
+                  <path className="relationship-path-halo" d={segment.path} key={segment.id} />
+                ))}
+                {layout.edges.map((edge) => (
+                  <path className="relationship-path-halo" d={edge.path} key={edge.id} />
+                ))}
+                {layout.landings.map((landing) => (
+                  <path
+                    className="relationship-path-halo relationship-path-halo--landing"
+                    d={landing.path}
+                    key={landing.id}
+                  />
+                ))}
+              </g>
+              <g data-paint-layer="connectors">
+                {layout.bundles.map((segment) => (
                   <path
                     className={`relationship-path relationship-path--${segment.relationship} relationship-path--bundle relationship-path--${segment.role}`}
                     d={segment.path}
                     data-role={segment.role}
                     data-source={segment.source}
+                    key={segment.id}
                     pathLength="1"
                   />
-                </g>
-              ))}
-              {layout.edges.map((edge) => (
-                <g key={edge.id}>
-                  <path className="relationship-path-halo" d={edge.path} />
+                ))}
+                {layout.edges.map((edge) => (
                   <path
                     className={`relationship-path relationship-path--${edge.relationship} relationship-path--arrival`}
                     d={edge.path}
                     data-role="arrival"
                     data-source={edge.source}
                     data-target={edge.target}
+                    key={edge.id}
                     pathLength="1"
                   />
-                </g>
-              ))}
-              {layout.landings.map((landing) => (
-                <g key={landing.id}>
-                  <path className="relationship-path-halo" d={landing.path} />
+                ))}
+                {layout.landings.map((landing) => (
                   <path
                     className={`relationship-path relationship-path--${landing.relationship} relationship-path--landing`}
                     d={landing.path}
                     data-role="landing"
                     data-target={landing.target}
+                    key={landing.id}
                     markerEnd={`url(#${landing.relationship === 'upstream' ? upstreamMarkerId : downstreamMarkerId})`}
                     pathLength="1"
                   />
-                </g>
-              ))}
+                ))}
+              </g>
               {layout.junctions.map((junction) => (
                 <circle
                   className={`relationship-junction relationship-junction--${junction.relationship}`}

@@ -93,6 +93,12 @@ describe('focused curriculum flow', () => {
     expect(view.container.querySelectorAll('[data-role="arrival"][marker-end]')).toHaveLength(0)
     expect(view.container.querySelector('[data-coordinate-system="fixed-logical"]')).toBeInTheDocument()
 
+    const haloLayer = view.container.querySelector('[data-paint-layer="halos"]')!
+    const connectorLayer = view.container.querySelector('[data-paint-layer="connectors"]')!
+    expect(haloLayer.nextElementSibling).toBe(connectorLayer)
+    expect(haloLayer.querySelectorAll('.relationship-path')).toHaveLength(0)
+    expect(connectorLayer.querySelectorAll('.relationship-path-halo')).toHaveLength(0)
+
     fireEvent.click(view.container.querySelector('[data-course-code="CYB382"]')!)
     expect(onSelectCourse).toHaveBeenCalledWith('CYB382')
   })
